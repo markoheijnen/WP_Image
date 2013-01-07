@@ -57,6 +57,19 @@ class WP_Image {
 		$editor->resize( $max_w, $max_h, $crop );
 		$resized = $editor->save();
 
+		return $this->store_image( $resized );
+	}
+
+	/**
+	 * Saves the new data of an image size to the metadata.
+	 *
+	 * @since 3.6.0
+	 * @access public
+	 *
+	 * @param array $resized The array you get back from WP_Image_Editor:save()
+	 * @return boolean
+	 */
+	public function store_image( $resized ) {
 		if ( ! is_wp_error( $resized ) && $resized ) {
 			unset( $resized['path'] );
 			$this->metadata['sizes'][ $name ] = $resized;
@@ -71,11 +84,11 @@ class WP_Image {
 	 * Gets an WP_Image_Editor for current attachment
 	 *
 	 * @since 3.6.0
-	 * @access private
+	 * @access public
 	 *
 	 * @return WP_Image_Editor
 	 */
-	private function get_editor() {
+	public function get_editor() {
 		if( ! isset( $this->editor ) )
 			$this->editor = wp_get_image_editor( $this->filepath );
 
@@ -86,11 +99,11 @@ class WP_Image {
 	 * Gets the attachment meta data
 	 *
 	 * @since 3.6.0
-	 * @access private
+	 * @access public
 	 *
 	 * @return array
 	 */
-	private function get_metadata() {
+	public function get_metadata() {
 		if( ! isset( $this->metadata ) )
 			$this->metadata = wp_get_attachment_metadata( $this->attachment_id );
 
@@ -101,11 +114,11 @@ class WP_Image {
 	 * Updates attachment metadata if it's set
 	 *
 	 * @since 3.6.0
-	 * @access private
+	 * @access public
 	 *
 	 * @return boolean
 	 */
-	private function update_metadata() {
+	public function update_metadata() {
 		if( $this->metadata )
 			return wp_update_attachment_metadata( $this->attachment_id, $this->metadata );
 
