@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * WordPress Image Class for using image data and creating new image sizes
+ *
+ * @since 3.6.0
+ * @package WordPress
+ * @uses 
+ */
 class WP_Image {
 	private $filepath;
 	private $attachment_id;
@@ -8,7 +14,9 @@ class WP_Image {
 
 	private $metadata;
 
-
+	/**
+	 * Each instance handles a single attachment.
+	 */
 	public function __construct( $attachment_id ) {
 		if( wp_attachment_is_image( $attachment_id ) ) {
 			$filepath = get_attached_file( $attachment_id );
@@ -24,6 +32,18 @@ class WP_Image {
 		}
 	}
 
+	/**
+	 * Creates a new image size for an attachment
+	 *
+	 * @since 3.6.0
+	 * @access public
+	 *
+	 * @param int $max_w
+	 * @param int $max_h
+	 * @param boolean $crop
+	 * @param boolean $force
+	 * @return boolean|WP_Error
+	 */
 	public function add_image_size( $name, $max_w, $max_h, $crop = false, $force = false ) {
 		$editor = $this->get_editor();
 		$this->get_metadata();
@@ -35,12 +55,16 @@ class WP_Image {
 			return $editor;
 
 		$editor->resize( $max_w, $max_h, $crop );
-		$result = $editor->save();
+		$resized = $editor->save();
 
-		unset( $result['path'] );
-		$this->metadata['sizes'][ $name ] = $result;
+		if ( ! is_wp_error( $resized ) && $resized ) {
+			unset( $resized['path'] );
+			$this->metadata['sizes'][ $name ] = $resized;
 
-		return $this->update_metadata();
+			return $this->update_metadata();
+		}
+
+		return false;
 	}
 
 	private function get_editor() {
