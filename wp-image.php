@@ -67,6 +67,14 @@ class WP_Image {
 		return false;
 	}
 
+	/**
+	 * Gets an WP_Image_Editor for current attachment
+	 *
+	 * @since 3.6.0
+	 * @access private
+	 *
+	 * @return WP_Image_Editor
+	 */
 	private function get_editor() {
 		if( ! isset( $this->editor ) )
 			$this->editor = wp_get_image_editor( $this->filepath );
@@ -74,6 +82,14 @@ class WP_Image {
 		return $this->editor;
 	}
 
+	/**
+	 * Gets the attachment meta data
+	 *
+	 * @since 3.6.0
+	 * @access private
+	 *
+	 * @return array
+	 */
 	private function get_metadata() {
 		if( ! isset( $this->metadata ) )
 			$this->metadata = wp_get_attachment_metadata( $this->attachment_id );
@@ -81,6 +97,14 @@ class WP_Image {
 		return $this->metadata; 
 	}
 
+	/**
+	 * Updates attachment metadata if it's set
+	 *
+	 * @since 3.6.0
+	 * @access private
+	 *
+	 * @return boolean
+	 */
 	private function update_metadata() {
 		if( $this->metadata )
 			return wp_update_attachment_metadata( $this->attachment_id, $this->metadata );
