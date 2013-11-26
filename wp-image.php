@@ -30,7 +30,7 @@ class WP_Image {
 				$this->filepath      = apply_filters( 'load_image_to_edit_path', $filepath, $attachment_id, 'full' );
 				$this->attachment_id = $attachment_id;
 
-				echo $this->filepath;
+				return $this->filepath;
 			}
 		}
 	}
@@ -60,7 +60,7 @@ class WP_Image {
 		$editor->resize( $max_w, $max_h, $crop );
 		$resized = $editor->save();
 
-		return $this->store_image( $resized );
+		return $this->store_image( $name, $resized );
 	}
 
 	/**
@@ -72,7 +72,7 @@ class WP_Image {
 	 * @param array $resized The array you get back from WP_Image_Editor:save()
 	 * @return boolean
 	 */
-	public function store_image( $resized ) {
+	public function store_image( $name, $resized ) {
 		if ( ! is_wp_error( $resized ) && $resized ) {
 			unset( $resized['path'] );
 			$this->metadata['sizes'][ $name ] = $resized;
