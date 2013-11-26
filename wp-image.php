@@ -29,8 +29,6 @@ class WP_Image {
 
 				$this->filepath      = apply_filters( 'load_image_to_edit_path', $filepath, $attachment_id, 'full' );
 				$this->attachment_id = $attachment_id;
-
-				return $this->filepath;
 			}
 		}
 	}
