@@ -46,6 +46,10 @@ class WP_Image {
 	 * @return boolean|WP_Error
 	 */
 	public function add_image_size( $name, $max_w, $max_h, $crop = false, $force = false ) {
+		if ( has_image_size( $name ) ) {
+			return new WP_Error( 'image_size_exists', __( 'This image size has been registered' ) );
+		}
+
 		$editor = $this->get_editor();
 		$this->get_metadata();
 
