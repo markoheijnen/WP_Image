@@ -53,8 +53,9 @@ class WP_Image {
 		$editor = $this->get_editor();
 		$this->get_metadata();
 
-		if( $force == false && isset( $this->metadata['sizes'][ $name ] ) )
-			return new WP_Error( 'image_size_exists', __( 'This image size already exists' ) );
+		if ( $force == false && isset( $this->metadata['sizes'][ $name ] ) ) {
+			return new WP_Error( 'image_exists', __( 'This image size already exists' ) );
+		}
 
 		if( is_wp_error( $editor ) )
 			return $editor;
