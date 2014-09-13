@@ -278,4 +278,34 @@ class WP_Image {
 		return $meta;
 	}
 
+
+	public static function _load_hooks() {
+		add_action( 'delete_attachment', array( __CLASS__, '_delete_attachment' ) );
+	}
+
+	public static function _delete_attachment( $post_id ) {
+		$file = get_attached_file( $post_id );
+		$meta = wp_get_attachment_metadata( $post_id );
+
+		$intermediate_sizes = array();
+		foreach ( get_intermediate_image_sizes() as $size ) {
+			if ( $intermediate = image_get_intermediate_size( $post_id, $size ) ) {
+				$intermediate_sizes[] = $intermediate['path'];
+			}
+		}
+
+		if ( isset( $meta['sizes'] ) && is_array( $meta['sizes'] ) ) {
+			foreach ( $meta['sizes'] as $size => $sizeinfo ) {
+				$intermediate_file = str_replace( basename( $file ), $sizeinfo['file'], $file );
+
+				if ( ! in_array( $intermediate_file, $intermediate_sizes ) ) {		
+					$intermediate_file = apply_filters( 'wp_delete_file', $intermediate_file );
+					@ unlink( path_join( $uploadpath['basedir'], $intermediate_file ) );
+				}
+			}
+		}
+	} 
+
 }
+
+WP_Image::_load_hooks();
